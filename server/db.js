@@ -140,6 +140,13 @@ export function createGoal(userId, goal) {
   return item.id
 }
 
+export function deleteGoal(userId, goalId) {
+  const db = readDb()
+  db.goals = db.goals.filter((goal) => !(goal.user_id === userId && goal.id === goalId))
+  writeDb(db)
+  return true
+}
+
 export function getInvestmentProfile(userId) {
   const db = readDb()
   return db.investmentProfiles.find((profile) => profile.user_id === userId)

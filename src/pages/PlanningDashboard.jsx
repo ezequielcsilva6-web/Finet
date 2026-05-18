@@ -63,6 +63,21 @@ export default function PlanningDashboard() {
             <div className="p-4 border rounded glass-card">Total contribuído: <strong>R$ {result.totalContributed}</strong></div>
           </div>
 
+          <div className="mb-6 grid gap-4 lg:grid-cols-3">
+            <div className="rounded-3xl bg-slate-950/80 p-4 glass-card">
+              <p className="text-sm text-slate-400">Crescimento mensal médio</p>
+              <p className="mt-2 text-2xl font-semibold text-white">R$ {result.projections.length ? ((result.finalBalance - result.initialBalance) / months).toFixed(2) : '0.00'}</p>
+            </div>
+            <div className="rounded-3xl bg-slate-950/80 p-4 glass-card">
+              <p className="text-sm text-slate-400">Primeiro momento de atenção</p>
+              <p className="mt-2 text-2xl font-semibold text-white">{result.firstNegativeMonth ? `${result.firstNegativeMonth} mês(es)` : 'Sem risco imediato'}</p>
+            </div>
+            <div className="rounded-3xl bg-slate-950/80 p-4 glass-card">
+              <p className="text-sm text-slate-400">Ritmo de planejamento</p>
+              <p className="mt-2 text-2xl font-semibold text-white">{result.pace}</p>
+            </div>
+          </div>
+
           <div style={{ height: 320 }} className="mb-6 rounded-3xl bg-slate-950/80 glass-card">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={result.projections} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
@@ -73,6 +88,17 @@ export default function PlanningDashboard() {
                 <Line type="monotone" dataKey="balance" stroke="#8884d8" strokeWidth={2} dot={false} />
               </LineChart>
             </ResponsiveContainer>
+          </div>
+
+          <div className="mb-6 rounded-3xl border border-white/10 bg-slate-950/70 p-6 glass-card">
+            <h3 className="text-lg font-medium mb-3">Orientação da IA</h3>
+            <ul className="space-y-2 text-slate-300">
+              {result.guidance.map((item, index) => (
+                <li key={index} className="rounded-3xl bg-slate-900/80 p-4">
+                  {item}
+                </li>
+              ))}
+            </ul>
           </div>
 
           <div>

@@ -46,15 +46,31 @@ router.post('/simulate', (req, res) => {
       })
     }
 
+    const finalBalance = projections.length ? projections[projections.length - 1].balance : Math.round(balance * 100) / 100
+    const advice = []
+    if (summary.balance < 0) {
+      advice.push('Seu saldo atual está negativo; ajuste gastos urgentes e busque aumentar receitas.')
+    }
+    if (monthlyContribution > 0) {
+      advice.push('Contribuições mensais consistentes ajudam a acelerar o crescimento do saldo.')
+    }
+    if (firstNegativeMonth !== null) {
+      advice.push(`O modelo indica risco de saldo negativo em ${firstNegativeMonth} mês(es) se a tendência atual continuar.`)
+    } else {
+      advice.push('O cenário é estável e mostra potencial de fortalecimento do saldo ao longo do tempo.')
+    }
+
     const result = {
       initialBalance: Math.round((summary.balance || 0) * 100) / 100,
       months,
       scenario,
       monthlyReturn,
       projections,
-      finalBalance: projections.length ? projections[projections.length - 1].balance : Math.round(balance * 100) / 100,
+      finalBalance,
       firstNegativeMonth,
       totalContributed: Math.round(cumulativeContribution * 100) / 100,
+      guidance: advice,
+      pace: monthlyContribution > 0 ? 'A velocidade de acumulação está favorável.' : 'Considere manter disciplina de aporte para melhores resultados.',
     }
 
     res.json(result)
@@ -114,6 +130,10 @@ router.get('/emotional-map', (req, res) => {
     })
 
     const strongestEmotion = emotionalCategories.reduce((best, current) => (current.amount > best.amount ? current : best), { label: 'Neutro', amount: 0 })
+    const categorySpendArray = Object.entries(categorySpend)
+      .map(([category, amount]) => ({ category, amount: Math.round(amount * 100) / 100 }))
+      .sort((a, b) => b.amount - a.amount)
+
     const recommendations = []
     if (strongestEmotion.label === 'Impulso') {
       recommendations.push('Evite compras de impulso em horários de pico emocional.')
@@ -130,13 +150,73 @@ router.get('/emotional-map', (req, res) => {
       totalExpenses: Math.round(totalExpenses * 100) / 100,
       weekdaySpend: weekdaySpend.map((item) => ({ ...item, amount: Math.round(item.amount * 100) / 100 })),
       periodSpend: periodSpend.map((item) => ({ ...item, amount: Math.round(item.amount * 100) / 100 })),
-      categorySpend: Object.entries(categorySpend).map(([category, amount]) => ({ category, amount: Math.round(amount * 100) / 100 })),
+      categorySpend: categorySpendArray,
       emotionalCategories,
       strongestEmotion,
       recommendations,
     })
   } catch (e) {
     res.status(500).json({ message: 'Erro ao calcular o mapa emocional', error: String(e) })
+  }
+})
+
+router.get('/insights', (req, res) => {
+  try {
+    const userId = req.user.id
+    const summary = calculateSummary(userId)
+    const transactions = getTransactions(userId)
+    const expenses = transactions.filter((tx) => tx.type === 'expense')
+
+    const totalExpenses = expenses.reduce((sum, tx) => sum + Number(tx.amount || 0), 0)
+    const categoryTotals = expenses.reduce((acc, tx) => {
+      const category = tx.category || 'Outros'
+      acc[category] = (acc[category] || 0) + Number(tx.amount || 0)
+      return acc
+    }, {})
+
+    const categorySpend = Object.entries(categoryTotals)
+      .map(([category, amount]) => ({ category, amount: Math.round(amount * 100) / 100 }))
+      .sort((a, b) => b.amount - a.amount)
+
+    const topExpenseCategory = categorySpend[0]?.category || 'Nenhuma'
+    const availableCash = Math.max(0, (summary.monthlyIncome || 0) - (summary.monthlyExpenses || 0))
+    const reserveGoal = Math.max(0, (summary.monthlyExpenses || 0) * 3)
+    const monthsToReserve = availableCash > 0 ? Math.ceil(Math.max(0, reserveGoal - summary.balance) / availableCash) : null
+
+    const recommendations = []
+    recommendations.push(`Seu maior impacto hoje vem de ${topExpenseCategory}.`)
+    if (availableCash <= 0) {
+      recommendations.push('Reduza custos fixos e busque formas de aumentar sua renda disponível.')
+    } else {
+      recommendations.push('Investir parte da renda disponível pode acelerar sua estabilidade financeira.')
+    }
+    if (monthsToReserve !== null) {
+      recommendations.push(`Com o fluxo atual, você pode atingir um fundo de emergência em ${monthsToReserve} mês(es).`)
+    }
+    if (summary.balance < 0) {
+      recommendations.push('Seu saldo está negativo — priorize quitar dívidas e cortar gastos imediatos.')
+    }
+
+    const financialMood = summary.balance >= reserveGoal ? 'Reserva saudável' : summary.balance >= 0 ? 'Em melhoria' : 'Atenção necessária'
+    const moodAdvice = summary.balance >= reserveGoal
+      ? 'Seu fundo está se mantendo bem, mantenha a disciplina.'
+      : summary.balance >= 0
+      ? 'Continue controlando seus gastos e aumente a poupança mensal.'
+      : 'Corte gastos imediatos e foque em aumentar receitas para virar o jogo.'
+
+    res.json({
+      summary,
+      totalExpenses: Math.round(totalExpenses * 100) / 100,
+      categorySpend,
+      topExpenseCategory,
+      availableCash: Math.round(availableCash * 100) / 100,
+      financialMood,
+      moodAdvice,
+      recommendations,
+      nextStep: monthsToReserve !== null ? `Foque em manter a sobra de R$ ${availableCash.toFixed(2)} por mês para alcançar o fundo em ${monthsToReserve} mês(es).` : 'Primeiro recupere fluxo positivo e depois direcione sobras para reserva.',
+    })
+  } catch (e) {
+    res.status(500).json({ message: 'Erro ao gerar insights financeiros', error: String(e) })
   }
 })
 

@@ -11,6 +11,7 @@ import ProfilePage from './pages/ProfilePage'
 import PlanningDashboard from './pages/PlanningDashboard'
 import SurvivalMode from './pages/SurvivalMode'
 import EmotionalMap from './pages/EmotionalMap'
+import InsightsPage from './pages/InsightsPage'
 import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
@@ -64,6 +65,14 @@ function App() {
           element={
             <ProtectedRoute>
               <PlanningDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/insights"
+          element={
+            <ProtectedRoute>
+              <InsightsPage />
             </ProtectedRoute>
           }
         />

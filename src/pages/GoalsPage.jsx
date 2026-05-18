@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import ProtectedLayout from '../components/ProtectedLayout'
-import { createGoal, fetchGoals } from '../api'
+import { createGoal, deleteGoal, fetchGoals } from '../api'
 
 function GoalsPage() {
   const [goals, setGoals] = useState([])
@@ -48,6 +48,17 @@ function GoalsPage() {
     }
   }
 
+  async function handleDelete(goalId) {
+    setError('')
+    try {
+      await deleteGoal(goalId)
+      const response = await fetchGoals()
+      setGoals(response.data.goals)
+    } catch (err) {
+      setError('Falha ao excluir a meta.')
+    }
+  }
+
   const progressMetrics = useMemo(() => {
     const total = goals.reduce((sum, goal) => sum + goal.progressPercentage, 0)
     return goals.length ? Math.round(total / goals.length) : 0
@@ -88,6 +99,13 @@ function GoalsPage() {
                       <div className="h-full rounded-full bg-finet-500" style={{ width: `${goal.progressPercentage}%` }} />
                     </div>
                     <p className="mt-3 text-sm text-slate-400">Guarde R$ {goal.monthlySavings.toFixed(2)} / mês para atingir em {goal.months} meses.</p>
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(goal.id)}
+                      className="mt-4 rounded-3xl bg-red-500/10 px-4 py-2 text-sm font-semibold text-red-300 transition hover:bg-red-500/20"
+                    >
+                      Excluir objetivo
+                    </button>
                   </div>
                 ))
               )}

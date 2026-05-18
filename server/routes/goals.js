@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { createGoal, getGoals } from '../db.js'
+import { createGoal, deleteGoal, getGoals } from '../db.js'
 
 const router = Router()
 
@@ -19,6 +19,19 @@ router.post('/', (req, res) => {
   }
   const id = createGoal(req.user.id, { title, target_amount, current_amount, months, priority })
   return res.status(201).json({ message: 'Meta criada.', id })
+})
+
+router.delete('/:goalId', (req, res) => {
+  const { goalId } = req.params
+  if (!goalId) {
+    return res.status(400).json({ message: 'ID da meta é obrigatório.' })
+  }
+  const parsedId = Number(goalId)
+  if (Number.isNaN(parsedId)) {
+    return res.status(400).json({ message: 'ID da meta inválido.' })
+  }
+  deleteGoal(req.user.id, parsedId)
+  return res.json({ message: 'Meta removida com sucesso.' })
 })
 
 export default router

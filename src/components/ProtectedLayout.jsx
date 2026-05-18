@@ -10,11 +10,13 @@ import {
   LogOut,
   ShieldCheck,
   HeartPulse,
+  Sparkles,
 } from 'lucide-react'
 
 const navItems = [
   { label: 'Dashboard', path: '/', icon: Home },
   { label: 'Planejamento', path: '/planning', icon: Target },
+  { label: 'Insights', path: '/insights', icon: Sparkles },
   { label: 'Emocional', path: '/emotional', icon: HeartPulse },
   { label: 'Sobrevivência', path: '/survival', icon: ShieldCheck },
   { label: 'Transações', path: '/transactions', icon: Activity },
