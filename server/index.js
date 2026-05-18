@@ -16,7 +16,7 @@ const app = express()
 const port = process.env.PORT || 4000
 
 app.use(helmet())
-app.use(cors({ origin: ['http://localhost:5173', 'http://127.0.0.1:5173'] }))
+app.use(cors({ origin: ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:5174', 'http://127.0.0.1:5174'] }))
 app.use(express.json())
 app.use(
   rateLimit({

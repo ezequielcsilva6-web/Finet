@@ -29,6 +29,26 @@
       "birthdate": "1992-05-18",
       "created_at": "2026-05-18T03:18:01.037Z",
       "updated_at": "2026-05-18T03:18:01.037Z"
+    },
+    {
+      "id": 1779075843664,
+      "name": "Test User",
+      "cpf": "98765432109",
+      "email": "test-user3@finet.local",
+      "password": "$2b$10$9LhTRDVCRYbTiPYz3SXT0OeHlbimO2zKH.sdxCqmIIhLRhg4Nk.iG",
+      "birthdate": "1990-01-01",
+      "created_at": "2026-05-18T03:44:03.664Z",
+      "updated_at": "2026-05-18T03:44:03.664Z"
+    },
+    {
+      "id": 1779076374587,
+      "name": "Ezequiel Cardoso da Silva",
+      "cpf": "85998601513",
+      "email": "ezequiel.c.silva6@ba.estudante.senai.br",
+      "password": "$2b$10$qUk1o8futisqA993GwMHF.DD0RlceHjbWuDKGxMb2oduXXW4Nj1Vy",
+      "birthdate": "2005-11-21",
+      "created_at": "2026-05-18T03:52:54.587Z",
+      "updated_at": "2026-05-18T03:52:54.587Z"
     }
   ],
   "transactions": [],

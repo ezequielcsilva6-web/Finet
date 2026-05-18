@@ -52,7 +52,8 @@ function RegisterPage() {
       })
       navigate('/login')
     } catch (err) {
-      setError(err.response?.data?.message || 'Erro ao registrar usuário.')
+      console.error('Register error', err)
+      setError(err.response?.data?.message || err.message || 'Erro ao registrar usuário.')
     } finally {
       setLoading(false)
     }
