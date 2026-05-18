@@ -1,0 +1,37 @@
+{
+  "users": [
+    {
+      "id": 1779073606678,
+      "name": "Test User",
+      "cpf": "12345678909",
+      "email": "test@finet.local",
+      "password": "$2b$10$/RL6NvALpx29n36bt/L.6u2Bg/kAWRGlX6OQIhRoH7oRjOQwG4rSC",
+      "birthdate": "1990-01-01",
+      "created_at": "2026-05-18T03:06:46.678Z",
+      "updated_at": "2026-05-18T03:06:46.679Z"
+    },
+    {
+      "id": 1779074166539,
+      "name": "QA User",
+      "cpf": "67890123456",
+      "email": "qa@finet.local",
+      "password": "$2b$10$FIbznjRo2hEWNq0EnRfLCOQNKeFnVOkpkrY5ZUqwsXkRDOsfI6bNa",
+      "birthdate": "1992-05-18",
+      "created_at": "2026-05-18T03:16:06.539Z",
+      "updated_at": "2026-05-18T03:16:06.540Z"
+    },
+    {
+      "id": 1779074281037,
+      "name": "QA User 2",
+      "cpf": "67890123457",
+      "email": "qa2@finet.local",
+      "password": "$2b$10$uCMYw/uQx8yuO3UAMcoEx.nnHdInN9orwgypfsoP1gYOVLUOUMHz6",
+      "birthdate": "1992-05-18",
+      "created_at": "2026-05-18T03:18:01.037Z",
+      "updated_at": "2026-05-18T03:18:01.037Z"
+    }
+  ],
+  "transactions": [],
+  "goals": [],
+  "investmentProfiles": []
+}
